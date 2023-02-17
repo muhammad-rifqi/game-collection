@@ -1,81 +1,113 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
+
 <head>
-<style>
-.objects {
-    display:inline-block;
-    background-color: #FFF3CC;
-    border: #DFBC6A 1px solid;
-    width: 50px; 
-    height: 50px;
-    margin: 10px;
-    padding: 8px;
-    font-size: 18px;
-    text-align: center;
-    box-shadow: 2px 2px 2px #999;
-    cursor: move;
-}
-#drop_zone {
-    background-color: #EEE; 
-    border: #999 1px solid;
-    width: 280px; 
-    height: 200px;
-    padding: 8px;
-    font-size: 18px;
-}
-</style>
-<script>
-function _(id){
-   return document.getElementById(id);	
-}
-var droppedIn = false;
-
- function drag_start(event) {
-  console.log(event)
-    _('app_status').innerHTML = "Dragging the "+event.target.getAttribute('id');
-    event.dataTransfer.dropEffect = "move";
-    event.dataTransfer.setData("text", event.target.id );
-}
-
-// function drag_enter(event) {
-//     _('app_status').innerHTML = "You are dragging over the "+event.target.getAttribute('id');
-// }
-// function drag_leave(event) {
-//     _('app_status').innerHTML = "You left the "+event.target.getAttribute('id');
-// }
-// function drag_drop(event) {
-//     event.preventDefault(); /* Prevent undesirable default behavior while dropping */
-//     var elem_id = event.dataTransfer.getData("text");
-//     event.target.appendChild( _(elem_id) );
-//     _('app_status').innerHTML = "Dropped "+elem_id+" into the "+event.target.getAttribute('id');
-//     _(elem_id).removeAttribute("draggable");
-//     _(elem_id).style.cursor = "default";
-//     droppedIn = true;
-// }
-function drag_end(event) {
-  console.log(event)
-    if(droppedIn == false){
-        _('app_status').innerHTML = "You let the "+event.target.id+" go.";
-    }
-	droppedIn = false;
-}
-// function readDropZone(){
-//     for(var i=0; i < _("drop_zone").children.length; i++){
-//         alert(_("drop_zone").children[i].id+" is in the drop zone");
-//     }
-//     /* Run Ajax request to pass any data to your server */
-// }
-</script>
+  <title>Game Buah Buahan</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 </head>
+<style>
+  #pisang,
+  #jeruk,
+  #apel {
+    border: 1px solid black;
+    margin: 10px;
+    padding: 10px;
+    height: 200px;
+  }
+</style>
+
 <body>
-<h2 id="app_status">App status...</h2>
-<h1>Drop Zone</h1>
-<div id="drop_zone" ondragenter="drag_enter(event)" ondrop="drag_drop(event)" ondragover="return false" ondragleave="drag_leave(event)" ></div>
-<div id="object1" class="objects" draggable="true" ondragstart="drag_start(event)" ondragend="drag_end(event)">object 1</div>
-<div id="object2" class="objects" draggable="true" ondragstart="drag_start(event)" ondragend="drag_end(event)">object 2</div>
-<div id="object3" class="objects" draggable="true" ondragstart="drag_start(event)" ondragend="drag_end(event)">object 3</div>
-<div id="object4" class="objects" draggable="true" ondragstart="drag_start(event)" ondragend="drag_end(event)">object 4</div>
-<hr>
-<button onclick="readDropZone()">Get Object Data</button>
+  <h1 align="center">Game Buah Buahan</h1>
+  <hr>
+  <div class="container">
+    <div class="row text-center">
+      <div class="col">
+        <p id="pisang" draggable="true" ondragstart="dragstart_handler(event)"
+          style="background-image: url('img/pisang.jpg'); background-size: 300px; background-repeat: no-repeat; background-position: center;">
+        </p>
+      </div>
+      <div class="col">
+        <p id="jeruk" draggable="true" ondragstart="dragstart_handler(event)"
+          style="background-image: url('img/jeruk.jpg'); background-size: 300px; background-repeat: no-repeat; background-position: center;">
+        </p>
+      </div>
+      <div class="col">
+        <p id="apel" draggable="true" ondragstart="dragstart_handler(event)"
+          style="background-image: url('img/apel.jpg'); background-size: 300px; background-repeat: no-repeat; background-position: center;">
+        </p>
+      </div>
+    </div>
+    <hr>
+    <div class="row text-center">
+      <div class="col">
+        <div id="pisang" ondrop="drop_handler(event);" ondragover="dragover_handler(event);">
+          Masukan Pisang Disini
+        </div>
+      </div>
+      <div class="col">
+        <div id="jeruk" ondrop="drop_handler(event);" ondragover="dragover_handler(event);">
+          Masukan Jeruk Disini
+        </div>
+      </div>
+      <div class="col">
+        <div id="apel" ondrop="drop_handler(event);" ondragover="dragover_handler(event);">
+          Masukan Apel Disini
+        </div>
+      </div>
+    </div>
+  </div>
+  <br>
+  <br>
+  <br>
+  <h3 align="center" id="hasil"></h3>
 </body>
+
+<script>
+
+  function output() {
+    var pisang = localStorage.getItem("data-pisang");
+    var jeruk = localStorage.getItem("data-jeruk");
+    var apel = localStorage.getItem("data-apel");
+    var n1 = JSON.parse(pisang);
+    var n2 = JSON.parse(jeruk);
+    var n3 = JSON.parse(apel);
+    if (parseInt(n1.value) == undefined || parseInt(n2.value) == undefined || parseInt(n2.value) == undefined) {
+      document.getElementById("hasil").innerHTML = "0";
+    } else {
+      var hasil = (parseInt(n1.value) + parseInt(n2.value) + parseInt(n3.value));
+      console.log(hasil)
+      document.getElementById("hasil").innerHTML = "Nilainya Adalah = " + hasil;
+      localStorage.clear();
+    }
+  }
+
+  function dragstart_handler(ev) {
+    console.log(`dragStart: dropEffect = ${ev.dataTransfer.dropEffect} ; effectAllowed = ${ev.dataTransfer.effectAllowed}`);
+    ev.dataTransfer.setData("text", ev.target.id);
+    ev.dataTransfer.effectAllowed = "move";
+  }
+
+  function drop_handler(ev) {
+    console.log(`drop: dropEffect = ${ev.dataTransfer.dropEffect} ; effectAllowed = ${ev.dataTransfer.effectAllowed}`);
+    ev.preventDefault();
+    const data = ev.dataTransfer.getData("text");
+    if (data == ev.target.id) {
+      ev.target.appendChild(document.getElementById(data));
+      var rw = { "name": data, "value": "3.3" }
+      localStorage.setItem(`data-${ev.target.id}`, JSON.stringify(rw))
+      output();
+    } else {
+      alert(data + " tidak sama dengan " + ev.target.id)
+      return false;
+    }
+  }
+
+  function dragover_handler(ev) {
+    console.log(`dragOver: dropEffect = ${ev.dataTransfer.dropEffect} ; effectAllowed = ${ev.dataTransfer.effectAllowed}`);
+    ev.preventDefault();
+    ev.dataTransfer.dropEffect = "move"
+  }
+</script>
+
 </html>
