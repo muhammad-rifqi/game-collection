@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Game Buah Buahan</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+</head>
+<style>
+  #pisang,
+  #jeruk,
+  #apel {
+    border: 1px solid black;
+    margin: 10px;
+    padding: 10px;
+    height: 200px;
+  }
+</style>
+
+<body>
+  <h1 align="center">Game Buah Buahan</h1>
+  <hr>
+  <div class="container">
+    <div class="row text-center">
+      <div class="col">
+        <p id="pisang" draggable="true" ondragstart="dragstart_handler(event)"
+          style="background-image: url('img/pisang.jpg'); background-size: 300px; background-repeat: no-repeat; background-position: center;">
+        </p>
+      </div>
+      <div class="col">
+        <p id="jeruk" draggable="true" ondragstart="dragstart_handler(event)"
+          style="background-image: url('img/jeruk.jpg'); background-size: 300px; background-repeat: no-repeat; background-position: center;">
+        </p>
+      </div>
+      <div class="col">
+        <p id="apel" draggable="true" ondragstart="dragstart_handler(event)"
+          style="background-image: url('img/apel.jpg'); background-size: 300px; background-repeat: no-repeat; background-position: center;">
+        </p>
+      </div>
+    </div>
+    <hr>
+    <div class="row text-center">
+      <div class="col">
+        <div id="pisang" ondrop="drop_handler(event);" ondragover="dragover_handler(event);">
+          Masukan Pisang Disini
+        </div>
+      </div>
+      <div class="col">
+        <div id="jeruk" ondrop="drop_handler(event);" ondragover="dragover_handler(event);">
+          Masukan Jeruk Disini
+        </div>
+      </div>
+      <div class="col">
+        <div id="apel" ondrop="drop_handler(event);" ondragover="dragover_handler(event);">
+          Masukan Apel Disini
+        </div>
+      </div>
+    </div>
+  </div>
+  <br>
+  <br>
+  <br>
+  <h3 align="center" id="hasil"></h3>
+</body>
+
+<script>
+
+  function output() {
+    var pisang = localStorage.getItem("data-pisang");
+    var jeruk = localStorage.getItem("data-jeruk");
+    var apel = localStorage.getItem("data-apel");
+    var n1 = JSON.parse(pisang);
+    var n2 = JSON.parse(jeruk);
+    var n3 = JSON.parse(apel);
+    if (parseInt(n1.value) == undefined || parseInt(n2.value) == undefined || parseInt(n2.value) == undefined) {
+      document.getElementById("hasil").innerHTML = "0";
+    } else {
+      var hasil = (parseInt(n1.value) + parseInt(n2.value) + parseInt(n3.value));
+      console.log(hasil)
+      document.getElementById("hasil").innerHTML = "Nilainya Adalah = " + hasil;
+      localStorage.clear();
+    }
+  }
+
+  function dragstart_handler(ev) {
+    console.log(`dragStart: dropEffect = ${ev.dataTransfer.dropEffect} ; effectAllowed = ${ev.dataTransfer.effectAllowed}`);
+    ev.dataTransfer.setData("text", ev.target.id);
+    ev.dataTransfer.effectAllowed = "move";
+  }
+
+  function drop_handler(ev) {
+    console.log(`drop: dropEffect = ${ev.dataTransfer.dropEffect} ; effectAllowed = ${ev.dataTransfer.effectAllowed}`);
+    ev.preventDefault();
+    const data = ev.dataTransfer.getData("text");
+    if (data == ev.target.id) {
+      ev.target.appendChild(document.getElementById(data));
+      var rw = { "name": data, "value": "3.3" }
+      localStorage.setItem(`data-${ev.target.id}`, JSON.stringify(rw))
+      output();
+    } else {
+      alert(data + " tidak sama dengan " + ev.target.id)
+      return false;
+    }
+  }
+
+  function dragover_handler(ev) {
+    console.log(`dragOver: dropEffect = ${ev.dataTransfer.dropEffect} ; effectAllowed = ${ev.dataTransfer.effectAllowed}`);
+    ev.preventDefault();
+    ev.dataTransfer.dropEffect = "move"
+  }
+</script>
+
+</html>
